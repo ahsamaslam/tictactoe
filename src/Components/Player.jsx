@@ -7,7 +7,12 @@ export default function Player(props) {
     if (IsEditing) {
       const input = event.target.parentElement.querySelector("input");
       if (input) {
-        setPlayerName(input.value);
+        const newName = input.value.trim() || props.name;
+        setPlayerName(newName);
+        // Notify parent component of name change
+        if (props.onNameChange) {
+          props.onNameChange(props.symbol, newName);
+        }
       }
     }
   }
@@ -16,13 +21,16 @@ export default function Player(props) {
     content = <input type="text" defaultValue={playerName} />;
   }
   return (
-    <li>
-      <span className="Player">
+    <li className={`player-item ${props.selected ? "selected" : ""}`}>
+      <span className="player-info">
         {content}
-        <span className="PlayerSymbol"> {props.symbol} </span>
+        <span className="player-symbol"> {props.symbol} </span>
       </span>
 
-      <button onClick={(event) => handleEditClick(event)}>
+      <button
+        onClick={(event) => handleEditClick(event)}
+        className="edit-button"
+      >
         {IsEditing ? "Save" : "Edit"}
       </button>
     </li>
